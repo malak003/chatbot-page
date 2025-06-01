@@ -34,30 +34,32 @@
 <!-- ✅ PLACE THE SCRIPT HERE -->
 <script>
     async function sendPrompt() {
-        const prompt = document.getElementById("prompt").value;
-        const responseBox = document.getElementById("response");
-        responseBox.textContent = "Thinking...";
+    const prompt = document.getElementById("prompt").value;
+    const responseBox = document.getElementById("response");
+    responseBox.textContent = "Thinking...";
 
-        try {
-            const res = await fetch("https://mmllak22.app.n8n.cloud/webhook/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt })
-            });
+    try {
+        const res = await fetch("https://mmllak22.app.n8n.cloud/webhook/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt })
+        });
 
-            const text = await res.text();
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch {
-                data = { error: text };
-            }
-
-            responseBox.textContent = data.reply || JSON.stringify(data);
-        } catch (err) {
-            responseBox.textContent = "Error: " + err.message;
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Server error ${res.status}: ${errorText}`);
         }
+
+        const data = await res.json();
+        responseBox.textContent = data.reply || JSON.stringify(data);
+    } catch (err) {
+        responseBox.textContent = "Error: " + err.message;
+        console.error(err);
     }
+}
+
 </script>
 
 </body>
