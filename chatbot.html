@@ -48,10 +48,10 @@
 
             if (!res.ok) {
                 const errorText = await res.text();
-                throw new Error(Server error ${res.status}: ${errorText});
+                throw new Error(`Server error ${res.status}: ${errorText}`);
             }
 
-            const text = await res.text(); // ✅ key change
+            const text = await res.text();
             responseBox.textContent = text;
         } catch (err) {
             responseBox.textContent = "Error: " + err.message;
