@@ -1,64 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Agent Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 1em;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        pre {
-            background-color: #f1f1f1;
-            padding: 10px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-        }
-    </style>
-</head>
-
-<body>
-<h2>Ask the AI Agent</h2>
-<textarea id="prompt" placeholder="Type your question here..."></textarea><br>
-<button onclick="sendPrompt()">Send</button>
-<pre id="response">Response will appear here...</pre>
-
-<script>
-    async function sendPrompt() {
-        const prompt = document.getElementById("prompt").value;
-        const responseBox = document.getElementById("response");
-        responseBox.textContent = "Thinking...";
-
-        try {
-            const res = await fetch("https://mmllak22.app.n8n.cloud/webhook/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ prompt })
-            });
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Server error ${res.status}: ${errorText}`);
-            }
-
-            const text = await res.text();
-            responseBox.textContent = text;
-        } catch (err) {
-            responseBox.textContent = "Error: " + err.message;
-            console.error(err);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Panel</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-</script>
+    #chat-panel {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+      height: 120px;
+    }
+    button {
+      background-color: #854fff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="chat-panel">
+    <label for="user-message">Your Message:</label>
+    <input type="text" id="user-message" placeholder="Type your question...">
+
+    <button id="send-button">Send</button>
+
+    <label for="assistant-response">Assistant Response:</label>
+    <textarea id="assistant-response" placeholder="Response will appear here..." disabled></textarea>
+  </div>
+
+  <script>
+    const sendBtn = document.getElementById("send-button");
+    const userInput = document.getElementById("user-message");
+    const responseBox = document.getElementById("assistant-response");
+
+    function getChatId() {
+      let chatId = sessionStorage.getItem("chatId");
+      if (!chatId) {
+        chatId = "chat_" + Math.random().toString(36).substr(2, 9);
+        sessionStorage.setItem("chatId", chatId);
+      }
+      return chatId;
+    }
+
+    sendBtn.addEventListener("click", () => {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      const chatId = getChatId();
+
+      fetch("https://mmllak22.app.n8n.cloud/webhook/d6d92b97-5ea2-4e02-9b03-abe3149b00b7/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatId: chatId,
+          chatInput: message,
+          message: message,
+          route: "general"
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        responseBox.value = data.output || "🤖 Sorry, I didn’t get that.";
+      })
+      .catch(err => {
+        responseBox.value = "❌ Error talking to assistant.";
+        console.error(err);
+      });
+
+      userInput.value = "";
+    });
+  </script>
 
 </body>
 </html>
