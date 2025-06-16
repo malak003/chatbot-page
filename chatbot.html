@@ -4,65 +4,89 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solar Chat Assistant</title>
-  <style> 
+  <style>
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
       background: transparent;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
     #chat-panel {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       background: #f8f9fa;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       padding: 16px;
       box-sizing: border-box;
     }
+
     label {
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-weight: 600;
+      margin-bottom: 6px;
       display: block;
+      color: #333;
     }
+
     input[type="text"], textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: 1px solid #ced4da;
       box-sizing: border-box;
       font-size: 14px;
+      background-color: #ffffff;
     }
+
     textarea {
       resize: vertical;
-      height: 120px;
+      height: 100px;
+      color: #212529;
     }
+
     button {
-      background-color: #854fff;
+      background-color: #28a745; /* Green - Normal status */
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: bold;
+      width: 100%;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #assistant-response {
+      background-color: #e9ecef;
+    }
+
+    .status-icon {
+      font-size: 1.1em;
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
 
   <div id="chat-panel">
-    <label for="user-message">Your Message:</label>
-    <input type="text" id="user-message" placeholder="Type your question...">
+    <label for="user-message"><span class="status-icon">🌞</span>Your Message:</label>
+    <input type="text" id="user-message" placeholder="Ask about performance, faults, cleaning...">
 
-    <button id="send-button">Send</button>
+    <button id="send-button">🚀 Send</button>
 
-    <label for="assistant-response">Assistant Response:</label>
-    <textarea id="assistant-response" placeholder="Response will appear here..." disabled></textarea>
+    <label for="assistant-response"><span class="status-icon">🧐</span>Assistant Response:</label>
+    <textarea id="assistant-response" placeholder="Assistant will respond here..." disabled></textarea>
   </div>
 
   <script>
